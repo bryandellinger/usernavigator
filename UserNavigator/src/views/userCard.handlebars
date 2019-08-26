@@ -1,0 +1,51 @@
+<div class="col-lg-4 col-sm-6 col-12 py-2">
+            <div class="card h-100 text-white bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">{{this.namE_FIRST}} {{this.namE_MIDDLE}} {{this.namE_LAST}}</h5>
+                    <p class="card-text"> 
+                    <a href="mailto:{{this.emaiL_ADDRESS}}" class="faa-parent animated-hover">
+                        <i class="fas fa-envelope faa-horizontal"></i> 
+                        {{this.emaiL_ADDRESS}}
+                    </a> 
+                    
+                    </p>
+                    {{#if this.worK_ADDR}}
+                     <p class="card-text">{{this.worK_ADDR}} {{this.worK_CITY}} {{this.work_ZIP}}</p>
+                    {{/if}}
+                    {{#if this.worK_PHONE}}
+                       <p class="card-text">
+                        <a href="tel: {{this.worK_PHONE}}" class="faa-parent animated-hover">
+                            <i class="fas fa-phone faa-shake"></i> 
+                             {{this.worK_PHONE}}
+                        </a>
+                       </p>
+                    {{/if}}
+                     <p class="card-text">Emp No: {{this.employeE_NUM}}</p>
+                      {{#if this.poS_NO}}
+                      <p class="card-text">Pos No: {{this.poS_NO}}</p>
+                     {{/if}}
+                     {{#if this.perS_AREA_NAME}}
+                      <p class="card-text">Agency: {{this.perS_AREA_NAME}}</p>
+                     {{/if}}
+                    {{#if this.bureau}}
+                         <p class="card-text">Bureau: {{this.bureau}}</p>
+                    {{/if}}
+                    {{#if this.deputate}}
+                        <p class="card-text">Deputate: {{this.deputate}}</p>
+                     {{/if}}
+                      {{#if this.orG_ID}}
+                      <p class="card-text">Org: {{this.orG_ID}}
+                           {{#if this.orG_NAME}}
+                           <span>( {{this.orG_NAME}} )</span>
+                           {{/if}}
+                      </p>
+                      {{/if}}
+                       {{#if this.joB_NAME}}
+                      <p class="card-text">Job: {{this.joB_NAME}}</p>
+                     {{/if}}
+                      {{#if this.spvR_FIRST_NAME}}
+                        <p class="card-text">Supervisor: {{this.spvR_FIRST_NAME}} {{this.spvR_MID_NAME}} {{this.spvR_LAST_NAME}} </p>
+                      {{/if}}
+                </div>
+            </div>
+        </div>

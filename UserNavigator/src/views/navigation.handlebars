@@ -1,0 +1,19 @@
+<div class="col text-left">
+           {{#if showPreviousBtn}}
+            <button class="btn btn-outline-primary btn-lg" id="previousBtn"><i class="fas fa-backward"></i> Previous</button>
+            {{/if}}
+        </div>
+ {{#if showPageCount}}
+<div class="col text-center">
+            <h5>Page <span class="badge badge-secondary">{{currentPage}}</span> of
+            {{#if showMoreThan}}
+            more than 
+            {{/if}}
+             <span class="badge badge-secondary">{{totalPages}}</span> pages</h5>
+        </div>
+{{/if}}
+<div class="col text-right">
+     {{#if showNextBtn}}
+            <button class="btn btn-outline-primary btn-lg" id="nextBtn">Next <i class="fas fa-forward"></i> </button>
+       {{/if}}
+</div>
