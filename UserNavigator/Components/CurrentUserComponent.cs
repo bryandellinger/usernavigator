@@ -13,7 +13,7 @@ namespace UserNavigator.Components
 
         public CurrentUserComponent(ICurrentUserRepository repo) => repository = repo;
 
-        public IViewComponentResult Invoke() => View(repository.Get(User.Identity.Name, HttpContext));
+        public IViewComponentResult Invoke() => View(repository.Get(HttpContext, User.Identity.Name));
 
     }
 }
