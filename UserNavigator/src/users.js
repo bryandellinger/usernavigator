@@ -5,6 +5,8 @@ import { AjaxService } from './services/ajaxService';
 
 const template = require('./views/users.handlebars');
 const navTemplate = require('./views/navigation.handlebars');
+const subordinateTemplate = require('./views/subordinate.handlebars');
+const subordinatenodataTemplate = require('./views/subordinatenodata.handlebars');
 
 class Users {
   constructor() {
@@ -20,7 +22,22 @@ class Users {
     this.initPrevious();
     this.initNext();
     this.initSearch();
+    this.initSubordinate();
     this.getData();
+  }
+
+  initSubordinate() {
+    const self = this;
+    $('body').on('click', '.subordinateBtn', function() {
+      const posNo = $(this).attr("value");
+      $(`#subordinate_${posNo}`).empty().append('<div class="fa-3x"><i class="fas fa-spinner fa-spin"></i></div>');
+      self.ajaxService.ajaxGet(`./api/EmployeeHierarchy/${posNo}`).then((data) => {
+        const _subordinateTemplate = data.length
+          ? subordinateTemplate(data) : subordinatenodataTemplate();
+
+        $(`#subordinate_${posNo}`).empty().append(_subordinateTemplate);
+      });
+    });
   }
 
   getData() {
