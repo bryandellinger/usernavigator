@@ -1,3 +1,70 @@
-﻿@model  CurrentUser
-<p class="nav navbar-text navbar-right"><i class="fas fa-user"></i> @Model.FirstName @Model.LastName</p>
+﻿@model CurrentUser
+<p class="nav navbar-text navbar-right">
+    <button type="button" class="btn btn-primary faa-parent animated-hover" data-toggle="modal" data-target="#myModal">
+        <i class="fas fa-user faa-tada"></i> @Model.NAME_FIRST @Model.NAME_LAST
+    </button>
+</p>
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"> <i class="fas fa-user"></i> @Model.NAME_FIRST @Model.NAME_MIDDLE @Model.NAME_LAST</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="Email">Email</label>
+                        <input type="email" class="form-control" id="Email" readonly value="@Model.EMAIL_ADDRESS">
+                    </div>
+                    <div class="form-group">
+                        <label for="EmpNo">Emp No</label>
+                        <input type="text" class="form-control" id="EmpNo" readonly value="@Model.EMPLOYEE_NUM">
+                    </div>
+                    <div class="form-group">
+                        <label for="Phone">Phone</label>
+                        <input type="text" class="form-control" id="Phone" readonly value="@Model.WORK_PHONE">
+                    </div>
+                    <div class="form-group">
+                        <label for="Address">Address</label>
+                        <input type="text" class="form-control" id="Address" readonly value="@Model.WORK_ADDR">
+                    </div>
+                    <div class="form-group">
+                        <label for="City">City</label>
+                        <input type="text" class="form-control" id="City" readonly value="@Model.WORK_CITY">
+                    </div>
+                    <div class="form-group">
+                        <label for="Zip">Zip</label>
+                        <input type="text" class="form-control" id="Zip" readonly value="@Model.WORK_ZIP">
+                    </div>
+                    <div class="form-group">
+                        <label for="Bureau">Bureau</label>
+                        <input type="text" class="form-control" id="Bureau" readonly value="@Model.BUREAU">
+                    </div>
+                    <div class="form-group">
+                        <label for="Deputate">Deputate</label>
+                        <input type="text" class="form-control" id="Deputate" readonly value="@Model.DEPUTATE">
+                    </div>
+                    <div class="form-group">
+                        <label for="Deputate">Division</label>
+                        <input type="text" class="form-control" id="Deputate" readonly value="@Model.DIVISION">
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
