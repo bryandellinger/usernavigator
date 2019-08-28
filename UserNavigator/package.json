@@ -26,6 +26,7 @@
     "file-loader": "^3.0.1",
     "font-awesome-animation": "^0.2.1",
     "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.2.0",
     "gulp-concat": "^2.6.1",
     "gulp-rename": "^1.4.0",
     "gulp-run": "^1.7.1",

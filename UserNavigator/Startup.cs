@@ -19,13 +19,17 @@ namespace UserNavigator
      
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            
             services.AddAuthentication(IISDefaults.AuthenticationScheme);
             string conString = Configuration["ConnectionStrings:DefaultConnection"];
             services.AddDbContext<DataContext>(options => options.UseSqlServer(conString));
             services.AddTransient<IEmployeesRepository, EmployeeRepository>();
             services.AddTransient<ICurrentUserRepository, CurrentUserRepository>();
             services.AddTransient<ICwopaAgencyFileRepository, CwopaAgencyFileRepository>();
+            services.AddTransient<IEmployeeHierarchyRepository, EmployeeHierarchyRepository>();
+            services.AddMvc();
+            services.AddMemoryCache();
+            services.AddSession();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -33,6 +37,7 @@ namespace UserNavigator
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
+            app.UseSession();
             app.UseMvcWithDefaultRoute();
         }
     }
