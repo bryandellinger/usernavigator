@@ -12,6 +12,8 @@ namespace UserNavigator.Models
 
         public virtual DbQuery<Employee> Employees { get; set; }
 
+        public virtual DbQuery<EmployeeHierarchy> EmployeeHierarchies { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CWOPA_AGENCY_FILE>(entity =>

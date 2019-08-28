@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SportsStore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace UserNavigator.Models
 {
     public interface ICurrentUserRepository
     {
-        CurrentUser Get(string identityName, HttpContext httpContext);
+        CurrentUser Get(HttpContext httpContext, string identityName = null);
     }
     public class CurrentUserRepository : ICurrentUserRepository
     {
@@ -16,24 +17,58 @@ namespace UserNavigator.Models
 
         public CurrentUserRepository(ICwopaAgencyFileRepository repo) => repository = repo;
 
-        public CurrentUser Get(string identityName, HttpContext httpContext)
+        public CurrentUser Get(HttpContext httpContext, string identityName = null)
         {
-            string domain = identityName.Split('\\')[1];
+            CurrentUser currentUser = new CurrentUser();
 
-            string userNameFromQueryString = httpContext.Request.Query["username"].ToString();
-
-            if (userNameFromQueryString != null && !string.IsNullOrEmpty(userNameFromQueryString))
+            if (identityName != null)
             {
-                domain = userNameFromQueryString.Split('\\')[1];
+                string domain = identityName.Split('\\')[1];
+
+                string userNameFromQueryString = httpContext.Request.Query["username"].ToString();
+
+                if (userNameFromQueryString != null && !string.IsNullOrEmpty(userNameFromQueryString))
+                {
+                    domain = userNameFromQueryString.Split('\\')[1];
+                    currentUser = GetCurrentUserFromDomain(domain);
+                    httpContext.Session.SetJson("CurrentUser", currentUser);
+                }
+                else
+                {
+                    currentUser = httpContext.Session.GetJson<CurrentUser>("CurrentUser");
+                    if (currentUser == null)
+                    {
+                        currentUser = GetCurrentUserFromDomain(domain);
+                        httpContext.Session.SetJson("CurrentUser", currentUser);
+                    }
+                }
             }
 
+            currentUser = httpContext.Session.GetJson<CurrentUser>("CurrentUser");
+            return currentUser;
+        }
+
+        private CurrentUser GetCurrentUserFromDomain(string domain)
+        {
             CWOPA_AGENCY_FILE cwopaAgencyFile = repository.GetByDomain(domain);
-            return new CurrentUser
+            CurrentUser currentUser = new CurrentUser
             {
-                UserName = identityName,
-                FirstName = cwopaAgencyFile?.NAME_FIRST,
-                LastName = cwopaAgencyFile?.NAME_LAST
+                UserName =  $"CWOPA\\{cwopaAgencyFile?.DOMAIN_NAME}",
+                NAME_FIRST = cwopaAgencyFile?.NAME_FIRST,
+                NAME_LAST = cwopaAgencyFile?.NAME_LAST,
+                BUREAU = cwopaAgencyFile?.BUREAU,
+                DIVISION = cwopaAgencyFile?.DIVISION,
+                DOMAIN_NAME = cwopaAgencyFile?.DOMAIN_NAME,
+                DEPUTATE = cwopaAgencyFile?.DEPUTATE,
+                EMAIL_ADDRESS = cwopaAgencyFile?.EMAIL_ADDRESS,
+                EMPLOYEE_NUM = cwopaAgencyFile?.EMPLOYEE_NUM,
+                NAME_MIDDLE = cwopaAgencyFile?.NAME_MIDDLE,
+                WORK_ADDR = cwopaAgencyFile?.NAME_MIDDLE,
+                WORK_CITY = cwopaAgencyFile?.WORK_CITY,
+                WORK_PHONE = cwopaAgencyFile?.WORK_PHONE,
+                WORK_ZIP = cwopaAgencyFile?.WORK_ZIP,
             };
+            return currentUser;
         }
     }
 }

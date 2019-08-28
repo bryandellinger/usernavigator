@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace UserNavigator.Models
 {
-    public class CurrentUser
+    public class CurrentUser : CWOPA_AGENCY_FILE
     {
         public string UserName { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
     }
 }
