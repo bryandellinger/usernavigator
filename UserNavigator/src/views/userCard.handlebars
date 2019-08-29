@@ -27,6 +27,13 @@
                      {{#if this.perS_AREA_NAME}}
                       <p class="card-text">Agency: {{this.perS_AREA_NAME}}</p>
                      {{/if}}
+                     {{#if this.company}}
+                      <p class="card-text">Company: {{this.company}}
+                          {{#if this.msExchExtensionAttribute20}}
+                          ( {{this.msExchExtensionAttribute20}} )
+                          {{/if}}
+                      </p>
+                     {{/if}}
                     {{#if this.bureau}}
                          <p class="card-text">Bureau: {{this.bureau}}</p>
                     {{/if}}

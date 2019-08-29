@@ -12,6 +12,6 @@ import { Users } from './users';
 
 window.Toastr = Toastr;
 
-$(document).ready(() => {
+$(() => {
   const users = new Users();
 });
