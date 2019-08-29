@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using UserNavigator.Models;
 using Microsoft.AspNetCore.Server.IISIntegration;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace UserNavigator
 {
@@ -30,6 +31,17 @@ namespace UserNavigator
             services.AddMvc();
             services.AddMemoryCache();
             services.AddSession();
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new Info
+                {
+                    Title = "People Viewer API",
+                    Version = "v1",
+                    Description = "API Service for browsing cwopa and ies directories",
+                    Contact = new Contact { Name = "Bryan Dellinger", Email = "c-bdelling@pa.gov", Url = "https://github.com/bryandellinger/usernavigator" },
+                    License = new License { Name = "MIT License" }
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -39,6 +51,10 @@ namespace UserNavigator
             app.UseStaticFiles();
             app.UseSession();
             app.UseMvcWithDefaultRoute();
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "People Viewer Services")
+            );
         }
     }
 }
