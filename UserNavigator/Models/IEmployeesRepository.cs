@@ -8,6 +8,6 @@ namespace UserNavigator.Models
     public interface IEmployeesRepository
     {
       
-        IEnumerable<Employee> Get(string search);
+        Task <IEnumerable<Employee>> Get(string search);
     }
 }

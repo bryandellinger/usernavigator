@@ -29,5 +29,10 @@ namespace UserNavigator.Models
         public string PERS_AREA_NAME { get; set; }
         public string FULL_NAME { get; set; }
         public string FULL_NAME_WITH_MIDDLE { get; set; }
+        public string COMPANY { get; set; }
+        public string DESCRIPTION { get; set; }
+        public string msExchExtensionAttribute20 { get; set; }
+        public string msExchExtensionAttribute21 { get; set; }
+        public string FULL_COMPANY { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace UserNavigator.Models
 {
     public interface IEmployeeHierarchyRepository
     {
-        IEnumerable<EmployeeHierarchy> Get(string PosNo);
+        Task<IEnumerable<EmployeeHierarchy>> Get(string PosNo);
     }
     public class EmployeeHierarchyRepository : IEmployeeHierarchyRepository
     {
@@ -17,7 +17,7 @@ namespace UserNavigator.Models
 
         public EmployeeHierarchyRepository(DataContext ctx) => context = ctx;
 
-        public IEnumerable<EmployeeHierarchy> Get(string PosNo)
+        public Task<IEnumerable<EmployeeHierarchy>> Get(string PosNo)
         {
             SqlParameter posNo = new SqlParameter("PosNo", PosNo);
             var sql = @";with EmpsCTE as 
@@ -29,9 +29,9 @@ namespace UserNavigator.Models
 )
 Select * from EmpsCTE  where emp_first_name is not null  and emp_last_name is not null order by 7
              ";
- 
-            return context.EmployeeHierarchies.FromSql(sql, posNo).Skip(1);
-        }
+
+            return Task.FromResult<IEnumerable<EmployeeHierarchy>>(context.EmployeeHierarchies.FromSql(sql, posNo).Skip(1));
+        } 
     }
 }
 

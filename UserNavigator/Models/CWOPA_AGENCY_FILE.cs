@@ -15,5 +15,9 @@
         public string DEPUTATE { get; set; }
         public string BUREAU { get; set; }
         public string DIVISION { get; set; }
+        public string COMPANY { get; set; }
+        public string DESCRIPTION { get; set; }
+        public string msExchExtensionAttribute20 { get; set; }
+        public string msExchExtensionAttribute21 { get; set; }
     }
 }
