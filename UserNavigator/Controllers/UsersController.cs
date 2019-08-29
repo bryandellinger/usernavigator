@@ -8,6 +8,7 @@ using UserNavigator.Models;
 
 namespace UserNavigator.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("api/Users")]
     public class UsersController : Controller
@@ -17,8 +18,7 @@ namespace UserNavigator.Controllers
 
         public UsersController(IEmployeesRepository repo) => repository = repo;
 
-        [Authorize]
         [HttpGet("{search}")]
-        public IActionResult Get(string search) => Ok(repository.Get(search == "null" ? null : search));
+        public Task<IEnumerable<Employee>> Get(string search) => repository.Get(search == "null" ? null : search);
     }
 }

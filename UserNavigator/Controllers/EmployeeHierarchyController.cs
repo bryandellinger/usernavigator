@@ -1,8 +1,12 @@
 ﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserNavigator.Models;
-using System.Linq;
+
 
 namespace UserNavigator.Controllers
 {
@@ -16,10 +20,7 @@ namespace UserNavigator.Controllers
         public EmployeeHierarchyController(IEmployeeHierarchyRepository repo) => repository = repo;
 
         [HttpGet("{posNo}")]
-        public IActionResult Get(string posNo)
-        {
-            var result = repository.Get(posNo).ToArray();
-            return Ok(result);
-        }
+        public Task<IEnumerable<EmployeeHierarchy>> Get(string posNo) => repository.Get(posNo);
+        
     }
 }
