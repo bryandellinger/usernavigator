@@ -1,3 +1,6 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-param-reassign */
+/* eslint-disable vars-on-top */
 /* eslint-disable prefer-const */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-restricted-globals */
@@ -25,7 +28,16 @@ class Users {
     this.initNext();
     this.initSearch();
     this.initSubordinate();
+    this.initSearchable();
     this.getData();
+  }
+
+  initSearchable() {
+    $('body').on('click', '.searchable', (event) => {
+      const text = $(event.target).text().split('/')[0];
+      $('#searchInput').val(text);
+      this.setSearchParams();
+    });
   }
 
   initSubordinate() {
@@ -34,37 +46,23 @@ class Users {
       posNo = $(event.currentTarget).attr('value');
       $(`#subordinate_${posNo}`).empty().append(spinnerTemplate());
       ajaxService.ajaxGet(`./api/EmployeeHierarchy/${posNo}`).then((data) => {
-        _subordinateTemplate = data.length
-          ? subordinateTemplate(this.getNestedChildren(data)) : subordinatenodataTemplate();
+        const d = data.length ? this.getChildrenRecursive(data.filter(x => x.empLevel === 2), data) : data;
+        _subordinateTemplate = d.length ? subordinateTemplate(d) : subordinatenodataTemplate();
 
         $(`#subordinate_${posNo}`).empty().append(_subordinateTemplate);
       });
     });
   }
 
-  getNestedChildren(arr){
-    const arrWithChildren = arr.map(x => ({...x, 'children': []}));
-    let topLevel = arrWithChildren.filter(x => x.empLevel === 2);
 
-    for (var i = 0; i < topLevel.length ; i++) { 
-        topLevel[i].children = arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].poS_NO);
-        for (var j = 0; j < topLevel[i].children.length; j++){
-          topLevel[i].children[j].children =  arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].children[j].poS_NO);
-          for (var k = 0; k < topLevel[i].children[j].children.length; k++){
-            topLevel[i].children[j].children[k].children =  arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].children[j].children[k].poS_NO);
-            for (var l = 0; l < topLevel[i].children[j].children[k].length; l++){
-              topLevel[i].children[j].children[k].children[l].children =  arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].children[j].children[k].children[l].poS_NO);
-              for (var m = 0; m < topLevel[i].children[j].children[k].children[l].length; m++){
-                topLevel[i].children[j].children[k].children[l].children[m].children =  arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].children[j].children[k].children[l].children[m].poS_NO);
-                for (var n = 0; n < topLevel[i].children[j].children[k].children[l].children[m].length; n++){
-                  topLevel[i].children[j].children[k].children[l].children[m].children[n].children =  arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].children[j].children[k].children[l].children[m].children[n].poS_NO);
-                }
-              }
-            }
-          }
-        }
+  getChildrenRecursive(filteredArr, arr) {
+    for (let i = 0; i < filteredArr.length; i++) {
+      filteredArr[i].children = arr.filter(x => x.spvR_POS_NO === filteredArr[i].poS_NO);
+      if (filteredArr[i].children.length) {
+        this.getChildrenRecursive(filteredArr[i].children, arr);
       }
-      return topLevel;
+    }
+    return filteredArr;
   }
 
   getData() {
@@ -73,6 +71,8 @@ class Users {
     ajaxService.ajaxGet(`./api/users/${this.search}`).then((d) => {
       this.data = d;
       this.render();
+    }).catch(() => {
+      $('#peopleContainer').empty();
     });
   }
 
