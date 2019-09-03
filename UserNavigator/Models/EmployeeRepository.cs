@@ -17,18 +17,14 @@ namespace UserNavigator.Models
             @"select
                 c.EMPLOYEE_NUM, i.POS_NO, i.ORG_ID, i.ORG_NAME, i.JOB_NAME, i.SPVR_POS_NO,
                 i.SPVR_FIRST_NAME, i.SPVR_MID_NAME, i.SPVR_LAST_NAME, i.PERS_AREA_NAME,
-                c.NAME_FIRST, c.NAME_LAST, c.NAME_MIDDLE, c.EMAIL_ADDRESS, c.DOMAIN_NAME,
+                COALESCE(c.NAME_FIRST, 'Vacant') as NAME_FIRST ,  COALESCE(c.NAME_LAST, 'Position') as NAME_LAST, c.NAME_MIDDLE, c.EMAIL_ADDRESS, c.DOMAIN_NAME,
                 c.WORK_PHONE, c.WORK_ADDR, C.WORK_CITY, c.WORK_ZIP, c.DEPUTATE, c.BUREAU,
                 c.COMPANY, c.DESCRIPTION, c.msExchExtensionAttribute20, c.msExchExtensionAttribute21,
                 c.DIVISION, c.NAME_FIRST + ' ' + c.NAME_LAST as FULL_NAME,
                 c.NAME_FIRST + ' ' + c.NAME_MIDDLE + ' ' + c.NAME_LAST as FULL_NAME_WITH_MIDDLE,
                 c.COMPANY + ' ( ' + c.msExchExtensionAttribute20 + ' )' as FULL_COMPANY
              from
-                IES_HR_EMPLOYEES i join CWOPA_AGENCY_FILE c on i.PERS_NO = c.EMPLOYEE_NUM
-             where i.PERS_NO is not null
-             and c.NAME_FIRST is not null
-             and c.NAME_LAST is not null
-             and c.EMAIL_ADDRESS is not null
+                IES_HR_EMPLOYEES i full outer join CWOPA_AGENCY_FILE c on i.PERS_NO = c.EMPLOYEE_NUM
              "
             ).
             Where(
@@ -38,6 +34,7 @@ namespace UserNavigator.Models
                     x.NAME_FIRST.ToLower().StartsWith(search.ToLower()) ||
                     x.FULL_NAME.ToLower().StartsWith(search.ToLower()) ||
                     x.EMPLOYEE_NUM.ToLower().StartsWith(search.ToLower()) ||
+                    (x.POS_NO != null && x.POS_NO.ToLower().StartsWith(search.ToLower())) ||
                     (x.ORG_ID != null && x.ORG_ID.ToLower().StartsWith(search.ToLower())) ||
                     (x.ORG_NAME != null && x.ORG_NAME.ToLower().StartsWith(search.ToLower())) ||
                     (x.JOB_NAME != null && x.JOB_NAME.ToLower().StartsWith(search.ToLower())) ||
