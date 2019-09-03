@@ -7,14 +7,20 @@
                 <i class="fas fa-question fa-2x faa-vertical"></i>
             </button>
         </h1>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Search CWOPA Active Directory" id="searchInput">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" id="searchBtn" type="button">
-                    <i class="fas fa-search"></i> Search
-                </button>
+
+        <form asp-controller="ExcelExport" asp-action="Index" id="searchForm">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" name="search" placeholder="Search CWOPA Active Directory" id="searchInput">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" id="searchBtn" type="button">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <button class="btn btn-outline-secondary"  type="submit">
+                        <i class="fas fa-file-excel"></i> Export
+                    </button>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 <div id="peopleContainer"></div>
@@ -44,4 +50,13 @@
         </div>
     </div>
 </div>
-<script src="~/webpack/app.bundle.js"></script>
+<script src="~/webpack/app.bundle.js" asp-append-version="true"></script>
+<script>
+    $('#searchForm').on('keyup keypress', function (e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
