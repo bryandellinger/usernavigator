@@ -35,11 +35,36 @@ class Users {
       $(`#subordinate_${posNo}`).empty().append(spinnerTemplate());
       ajaxService.ajaxGet(`./api/EmployeeHierarchy/${posNo}`).then((data) => {
         _subordinateTemplate = data.length
-          ? subordinateTemplate(data) : subordinatenodataTemplate();
+          ? subordinateTemplate(this.getNestedChildren(data)) : subordinatenodataTemplate();
 
         $(`#subordinate_${posNo}`).empty().append(_subordinateTemplate);
       });
     });
+  }
+
+  getNestedChildren(arr){
+    const arrWithChildren = arr.map(x => ({...x, 'children': []}));
+    let topLevel = arrWithChildren.filter(x => x.empLevel === 2);
+
+    for (var i = 0; i < topLevel.length ; i++) { 
+        topLevel[i].children = arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].poS_NO);
+        for (var j = 0; j < topLevel[i].children.length; j++){
+          topLevel[i].children[j].children =  arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].children[j].poS_NO);
+          for (var k = 0; k < topLevel[i].children[j].children.length; k++){
+            topLevel[i].children[j].children[k].children =  arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].children[j].children[k].poS_NO);
+            for (var l = 0; l < topLevel[i].children[j].children[k].length; l++){
+              topLevel[i].children[j].children[k].children[l].children =  arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].children[j].children[k].children[l].poS_NO);
+              for (var m = 0; m < topLevel[i].children[j].children[k].children[l].length; m++){
+                topLevel[i].children[j].children[k].children[l].children[m].children =  arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].children[j].children[k].children[l].children[m].poS_NO);
+                for (var n = 0; n < topLevel[i].children[j].children[k].children[l].children[m].length; n++){
+                  topLevel[i].children[j].children[k].children[l].children[m].children[n].children =  arrWithChildren.filter(x => x.spvR_POS_NO === topLevel[i].children[j].children[k].children[l].children[m].children[n].poS_NO);
+                }
+              }
+            }
+          }
+        }
+      }
+      return topLevel;
   }
 
   getData() {
@@ -75,6 +100,7 @@ class Users {
     $('#peopleContainer').empty().append(_template);
     $('#navContainer').empty().append(_navTemplate);
   }
+
 
   initSearch() {
     $('body').on('click', '#searchBtn', () => this.setSearchParams());
