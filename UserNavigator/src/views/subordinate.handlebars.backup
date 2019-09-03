@@ -1,0 +1,9 @@
+<ul class="list-group text-dark">
+   {{#each this}}
+   <li class="list-group-item d-flex justify-content-between align-items-center">
+    <small>{{this.emP_FIRST_NAME}}  {{this.emP_LAST_NAME}} </small>
+
+    <span class="badge badge-primary badge-pill text-truncate"> {{this.spvR_FIRST_NAME}}  {{this.spvR_LAST_NAME}}</span>
+  </li>
+   {{/each}}
+</ul>

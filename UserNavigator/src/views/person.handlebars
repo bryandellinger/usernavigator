@@ -1,0 +1,8 @@
+<li>
+  {{this.emP_FIRST_NAME}} {{this.emP_LAST_NAME}} ({{this.poS_NO}})
+  <ul>
+    {{#each this.children}}
+      {{> person}}
+    {{/each}}
+  </ul>
+</li>
