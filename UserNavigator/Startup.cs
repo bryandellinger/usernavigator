@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using UserNavigator.Models;
 using Microsoft.AspNetCore.Server.IISIntegration;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace UserNavigator
 {
@@ -48,7 +49,14 @@ namespace UserNavigator
         {
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
-            app.UseStaticFiles();
+            StaticFileOptions soptions = new StaticFileOptions();
+            FileExtensionContentTypeProvider typeProvider = new FileExtensionContentTypeProvider();
+            if (!typeProvider.Mappings.ContainsKey(".woff2"))
+            {
+                typeProvider.Mappings.Add(".woff2", "application/font-woff2");
+            }
+            soptions.ContentTypeProvider = typeProvider;
+            app.UseStaticFiles(soptions);
             app.UseSession();
             app.UseMvcWithDefaultRoute();
             app.UseSwagger();
