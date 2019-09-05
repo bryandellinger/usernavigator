@@ -51,12 +51,4 @@
     </div>
 </div>
 <script src="~/webpack/app.bundle.js" asp-append-version="true"></script>
-<script>
-    $('#searchForm').on('keyup keypress', function (e) {
-        var keyCode = e.keyCode || e.which;
-        if (keyCode === 13) {
-            e.preventDefault();
-            return false;
-        }
-    });
-</script>
+
