@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UserNavigator.Infrastructure;
 using UserNavigator.Models;
 
 namespace UserNavigator.Controllers
@@ -19,6 +20,7 @@ namespace UserNavigator.Controllers
         public UsersController(IEmployeesRepository repo) => repository = repo;
 
         [HttpGet("{search}")]
+        [ApiException]
         public Task<IEnumerable<Employee>> Get(string search) => repository.Get(search == "null" ? null : search);
     }
 }
