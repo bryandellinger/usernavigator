@@ -25,33 +25,40 @@
                       <p class="card-text">Pos No: {{this.poS_NO}}</p>
                      {{/if}}
                      {{#if this.perS_AREA_NAME}}
-                      <p class="card-text">Agency: {{this.perS_AREA_NAME}}</p>
+                      <p class="card-text">Agency: 
+                        <a href="#" class="searchable">{{this.perS_AREA_NAME}}</a>  
+                      </p>
                      {{/if}}
                      {{#if this.company}}
-                      <p class="card-text">Company: {{this.company}}
+                      <p class="card-text">Company:
+                           <a href="#" class="searchable">{{this.company}}</a>  
                           {{#if this.msExchExtensionAttribute20}}
-                          ( {{this.msExchExtensionAttribute20}} )
+                          (
+                              <a href="#" class="searchable">{{this.msExchExtensionAttribute20}}</a> 
+                           )
                           {{/if}}
                       </p>
                      {{/if}}
                     {{#if this.bureau}}
-                         <p class="card-text">Bureau: {{this.bureau}}</p>
+                         <p class="card-text">Bureau: <a href="#" class="searchable">{{this.bureau}}</a> </p>
                     {{/if}}
                     {{#if this.deputate}}
-                        <p class="card-text">Deputate: {{this.deputate}}</p>
+                        <p class="card-text">Deputate: <a href="#" class="searchable">{{this.deputate}}</a></p>
                      {{/if}}
                       {{#if this.orG_ID}}
-                      <p class="card-text">Org: {{this.orG_ID}}
+                      <p class="card-text">Org:  <a href="#" class="searchable">{{this.orG_ID}}</a>
                            {{#if this.orG_NAME}}
-                           <span>( {{this.orG_NAME}} )</span>
+                           <span>( <a href="#" class="searchable">{{this.orG_NAME}}</a> )</span>
                            {{/if}}
                       </p>
                       {{/if}}
                        {{#if this.joB_NAME}}
-                      <p class="card-text">Job: {{this.joB_NAME}}</p>
+                      <p class="card-text">Job: <a href="#" class="searchable">{{this.joB_NAME}}</a></p>
                      {{/if}}
                       {{#if this.spvR_FIRST_NAME}}
-                        <p class="card-text">Supervisor: {{this.spvR_FIRST_NAME}} {{this.spvR_MID_NAME}} {{this.spvR_LAST_NAME}} </p>
+                        <p class="card-text">Supervisor: 
+                            <a href="#" class="searchable">{{this.spvR_FIRST_NAME}} {{this.spvR_MID_NAME}} {{this.spvR_LAST_NAME}}</a>
+                        </p>
                       {{/if}}
                         {{#if this.poS_NO}}
                        <p class="card-text">

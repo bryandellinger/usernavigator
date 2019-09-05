@@ -1,11 +1,4 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable no-param-reassign */
-/* eslint-disable vars-on-top */
-/* eslint-disable prefer-const */
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-underscore-dangle */
-import { AjaxService } from './services/ajaxService';
+import AjaxService from './services/ajaxService';
 
 const template = require('./views/users.handlebars');
 const navTemplate = require('./views/navigation.handlebars');
@@ -13,14 +6,12 @@ const subordinateTemplate = require('./views/subordinate.handlebars');
 const subordinatenodataTemplate = require('./views/subordinatenodata.handlebars');
 const spinnerTemplate = require('./views/spinner.handlebars');
 
-class Users {
+export default class Users {
   constructor() {
-    this.ajaxService = new AjaxService();
     this.index = 0;
     this.search = null;
     this.data = [];
     this.itemsPerPage = 3;
-    this.init();
   }
 
   init() {
@@ -41,34 +32,37 @@ class Users {
   }
 
   initSubordinate() {
-    let { ajaxService, posNo, _subordinateTemplate } = this;
+    let { posNo, _subordinateTemplate } = this;
     $('body').on('click', '.subordinateBtn', (event) => {
       posNo = $(event.currentTarget).attr('value');
       $(`#subordinate_${posNo}`).empty().append(spinnerTemplate());
-      ajaxService.ajaxGet(`./api/EmployeeHierarchy/${posNo}`).then((data) => {
-        const d = data.length ? this.getChildrenRecursive(data.filter(x => x.empLevel === 2), data) : data;
+      AjaxService.ajaxGet(`./api/EmployeeHierarchy/${posNo}`).then((data) => {
+        const d = data.length
+          ? this.getChildrenRecursive(data.filter((x) => x.empLevel === 2), data) : data;
         _subordinateTemplate = d.length ? subordinateTemplate(d) : subordinatenodataTemplate();
 
         $(`#subordinate_${posNo}`).empty().append(_subordinateTemplate);
-      });
+      })
+        .catch(() => {
+          $(`#subordinate_${posNo}`).empty();
+        });
     });
   }
 
-
   getChildrenRecursive(filteredArr, arr) {
-    for (let i = 0; i < filteredArr.length; i++) {
-      filteredArr[i].children = arr.filter(x => x.spvR_POS_NO === filteredArr[i].poS_NO);
-      if (filteredArr[i].children.length) {
-        this.getChildrenRecursive(filteredArr[i].children, arr);
+    const fa = filteredArr;
+    for (let i = 0; i < filteredArr.length; i += 1) {
+      fa[i].children = arr.filter((x) => x.spvR_POS_NO === fa[i].poS_NO);
+      if (fa[i].children.length) {
+        this.getChildrenRecursive(fa[i].children, arr);
       }
     }
     return filteredArr;
   }
 
   getData() {
-    const { ajaxService } = this;
     $('#peopleContainer').empty().append(spinnerTemplate());
-    ajaxService.ajaxGet(`./api/users/${this.search}`).then((d) => {
+    AjaxService.ajaxGet(`./api/users/${this.search}`).then((d) => {
       this.data = d;
       this.render();
     }).catch(() => {
@@ -77,9 +71,8 @@ class Users {
   }
 
   render() {
-    let {
-      index, itemsPerPage, data, _template, _navTemplate,
-    } = this;
+    let { _template, _navTemplate } = this;
+    const { index, itemsPerPage, data } = this;
 
     _template = template(data.slice(
       index * itemsPerPage,
@@ -105,7 +98,7 @@ class Users {
   initSearch() {
     $('body').on('click', '#searchBtn', () => this.setSearchParams());
     $('#searchInput').keyup(() => {
-      if (Object.is(event.keyCode, 13)) {
+      if (Object.is(window.event.keyCode, 13)) {
         this.setSearchParams();
       }
     });
@@ -131,6 +124,3 @@ class Users {
     });
   }
 }
-
-
-export { Users };

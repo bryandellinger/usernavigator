@@ -1,5 +1,7 @@
 <li>
-  {{this.emP_FIRST_NAME}} {{this.emP_LAST_NAME}} ({{this.poS_NO}})
+  {{this.emP_FIRST_NAME}} {{this.emP_LAST_NAME}} (
+    <a href="#" class="searchable">{{this.poS_NO}}</a>    
+    )
   <ul>
     {{#each this.children}}
       {{> person}}
