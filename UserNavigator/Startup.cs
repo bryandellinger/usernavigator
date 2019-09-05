@@ -24,7 +24,9 @@ namespace UserNavigator
             
             services.AddAuthentication(IISDefaults.AuthenticationScheme);
             string conString = Configuration["ConnectionStrings:DefaultConnection"];
+
             services.AddDbContext<DataContext>(options => options.UseSqlServer(conString));
+
             services.AddTransient<IEmployeesRepository, EmployeeRepository>();
             services.AddTransient<ICurrentUserRepository, CurrentUserRepository>();
             services.AddTransient<ICwopaAgencyFileRepository, CwopaAgencyFileRepository>();

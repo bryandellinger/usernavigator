@@ -7,6 +7,7 @@ const concat = require('gulp-concat');
 const run = require('gulp-run');
 const cleanCSS = require('gulp-clean-css');
 const del = require('del');
+const rename = require('gulp-rename');
 
 // Concatenate Vendor CSS
 function vendorcss() {
@@ -35,6 +36,13 @@ function images() {
         .pipe(gulp.dest('wwwroot/images'));
 }
 
+function favicon() {
+    return gulp
+        .src(['images/favicon-32X32.png'])
+        .pipe(rename('favicon.ico'))
+        .pipe(gulp.dest('wwwroot'));
+}
+
 function cleanAll() {
    return del(['wwwroot/**', '!wwwroot']);
 }
@@ -54,6 +62,6 @@ function builddev() {
   return run('npm run builddev').exec();
 }
 
-const build = gulp.series(cleanAll, gulp.parallel(vendorcss, vendorjs, webfonts, images, builddev));
+const build = gulp.series(cleanAll, gulp.parallel(vendorcss, vendorjs, webfonts, images, favicon, builddev));
 
 exports.default = build;
