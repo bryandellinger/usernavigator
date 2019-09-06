@@ -8,10 +8,12 @@ const spinnerTemplate = require('./views/spinner.handlebars');
 
 export default class Users {
   constructor() {
-    this.index = 0;
-    this.search = null;
-    this.data = [];
-    this.itemsPerPage = 3;
+    this.state = {
+      index: 0,
+      search: null,
+      data: [],
+      itemsPerPage: 3,
+    };
   }
 
   init() {
@@ -23,6 +25,10 @@ export default class Users {
     this.getData();
   }
 
+  setState(state) {
+    this.state = state;
+  }
+
   initSearchable() {
     $('body').on('click', '.searchable', (event) => {
       const text = $(event.target).text().split('/')[0];
@@ -32,17 +38,16 @@ export default class Users {
   }
 
   initSubordinate() {
-    let { posNo, _subordinateTemplate } = this;
     $('body').on('click', '.subordinateBtn', (event) => {
-      posNo = $(event.currentTarget).attr('value');
+      const posNo = $(event.currentTarget).attr('value');
       $(`#subordinate_${posNo}`).empty().append(spinnerTemplate());
-      AjaxService.ajaxGet(`./api/EmployeeHierarchy/${posNo}`).then((data) => {
-        const d = data.length
-          ? this.getChildrenRecursive(data.filter((x) => x.empLevel === 2), data) : data;
-        _subordinateTemplate = d.length ? subordinateTemplate(d) : subordinatenodataTemplate();
-
-        $(`#subordinate_${posNo}`).empty().append(_subordinateTemplate);
-      })
+      AjaxService.ajaxGet(`./api/EmployeeHierarchy/${posNo}`)
+        .then((data) => {
+          const filterFn = (x) => Object.is(x.empLevel, 2);
+          const d = data.length ? this.getChildrenRecursive(data.filter(filterFn), data) : data;
+          const subTemplate = d.length ? subordinateTemplate(d) : subordinatenodataTemplate();
+          $(`#subordinate_${posNo}`).empty().append(subTemplate);
+        })
         .catch(() => {
           $(`#subordinate_${posNo}`).empty();
         });
@@ -61,9 +66,10 @@ export default class Users {
   }
 
   getData() {
+    const { search } = this.state;
     $('#peopleContainer').empty().append(spinnerTemplate());
-    AjaxService.ajaxGet(`./api/users/${this.search}`).then((d) => {
-      this.data = d;
+    AjaxService.ajaxGet(`./api/users/${search}`).then((d) => {
+      this.setState({ ...this.state, data: d });
       this.render();
     }).catch(() => {
       $('#peopleContainer').empty();
@@ -71,27 +77,27 @@ export default class Users {
   }
 
   render() {
-    let { _template, _navTemplate } = this;
-    const { index, itemsPerPage, data } = this;
-
-    _template = template(data.slice(
-      index * itemsPerPage,
-      index * itemsPerPage + itemsPerPage,
-    ));
-
-    _navTemplate = navTemplate(
+    const { index, itemsPerPage, data } = this.state;
+    const d = data.slice(index * itemsPerPage, index * itemsPerPage + itemsPerPage);
+    const t = template(d);
+    const start = (index + 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const showNextBtn = data.slice(start, end).length;
+    const totalPages = Math.ceil(data.length / itemsPerPage);
+    const showPageCount = data.length > itemsPerPage;
+    const showMoreThan = totalPages >= 10000;
+    const navT = navTemplate(
       {
         showPreviousBtn: index,
-        showNextBtn: data.slice((index + 1) * itemsPerPage,
-          (index + 1) * itemsPerPage + itemsPerPage).length,
+        showNextBtn,
         currentPage: index + 1,
-        totalPages: Math.ceil(data.length / itemsPerPage),
-        showPageCount: data.length > itemsPerPage,
-        showMoreThan: Math.ceil(data.length / itemsPerPage) >= 10000,
+        totalPages,
+        showPageCount,
+        showMoreThan,
       },
     );
-    $('#peopleContainer').empty().append(_template);
-    $('#navContainer').empty().append(_navTemplate);
+    $('#peopleContainer').empty().append(t);
+    $('#navContainer').empty().append(navT);
   }
 
 
@@ -105,21 +111,23 @@ export default class Users {
   }
 
   setSearchParams() {
-    this.index = 0;
-    this.search = $('#searchInput').val() || null;
+    const search = $('#searchInput').val() || null;
+    this.setState({ ...this.state, index: 0, search });
     this.getData();
   }
 
   initPrevious() {
     $('body').on('click', '#previousBtn', () => {
-      this.index -= 1;
+      const { index } = this.state;
+      this.setState({ ...this.state, index: index - 1 });
       this.render();
     });
   }
 
   initNext() {
     $('body').on('click', '#nextBtn', () => {
-      this.index += 1;
+      const { index } = this.state;
+      this.setState({ ...this.state, index: index + 1 });
       this.render();
     });
   }
