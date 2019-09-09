@@ -9,6 +9,7 @@ export default class Subordinates {
     this.state = {
       posNo: null,
       d: [],
+      cache: new Map(),
     };
   }
 
@@ -17,19 +18,30 @@ export default class Subordinates {
   }
 
   initSubordinate() {
+    const { cache } = this.state;
     $('body').on('click', '.subordinateBtn', (event) => {
       const posNo = $(event.currentTarget).attr('value');
       $(`#subordinate_${posNo}`).empty().append(spinnerTemplate());
-      AjaxService.ajaxGet(`./api/EmployeeHierarchy/${posNo}`)
-        .then((data) => {
-          const filterFn = (x) => Object.is(x.empLevel, 2);
-          const d = data.length ? this.getChildrenRecursive(data.filter(filterFn), data) : data;
-          this.setState({ ...this.state, d, posNo });
-          this.render();
-        })
-        .catch(() => {
-          $(`#subordinate_${posNo}`).empty();
+      if (cache.get(posNo)) {
+        this.setState({
+          ...this.state, posNo, d: cache.get(posNo),
         });
+        this.render();
+      } else {
+        AjaxService.ajaxGet(`./api/EmployeeHierarchy/${posNo}`)
+          .then((data) => {
+            const filterFn = (x) => Object.is(x.empLevel, 2);
+            const d = data.length ? this.getChildrenRecursive(data.filter(filterFn), data) : data;
+            cache.set(posNo, d);
+            this.setState({
+              ...this.state, d, posNo, cache,
+            });
+            this.render();
+          })
+          .catch(() => {
+            $(`#subordinate_${posNo}`).empty();
+          });
+      }
     });
   }
 

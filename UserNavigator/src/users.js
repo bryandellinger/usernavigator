@@ -14,6 +14,7 @@ export default class Users {
       search: null,
       data: [],
       itemsPerPage: 3,
+      cache: new Map(),
     };
   }
 
@@ -23,7 +24,15 @@ export default class Users {
     this.initSearch();
     subordinates.initSubordinate();
     this.initSearchable();
+    this.initClearBtn();
     this.getData();
+  }
+
+  initClearBtn() {
+    $('body').on('click', '#clearBtn', () => {
+      $('#searchInput').val('');
+      this.setSearchParams();
+    });
   }
 
   setState(state) {
@@ -40,20 +49,31 @@ export default class Users {
 
 
   getData() {
-    const { search } = this.state;
+    const { search, cache } = this.state;
+    const key = (search || 'none').toLowerCase();
     $('#peopleContainer').empty().append(spinnerTemplate());
-    AjaxService.ajaxGet(`./api/users/${search}`).then((d) => {
-      this.setState({ ...this.state, data: d });
+    if (cache.get(key)) {
+      this.setState({ ...this.state, data: cache.get(key) });
       this.render();
-    }).catch(() => {
-      $('#peopleContainer').empty();
-    });
+    } else {
+      AjaxService.ajaxGet(`./api/users/${search}`).then((d) => {
+        cache.set(key, d);
+        this.setState({ ...this.state, data: d, cache });
+        const searchText = search || $('#searchInput').val();
+        if (search) {
+          $('#searchList').append(`<option value='${searchText.toLowerCase()}'>`);
+        }
+        this.render();
+      }).catch(() => {
+        $('#peopleContainer').empty();
+      });
+    }
   }
 
   render() {
     const { index, itemsPerPage, data } = this.state;
     const d = data.slice(index * itemsPerPage, index * itemsPerPage + itemsPerPage);
-    const t = template(d);
+    const t = template(d.map((x) => ({ ...x, showCards: d.length > 1 })));
     const start = (index + 1) * itemsPerPage;
     const end = start + itemsPerPage;
     const showNextBtn = data.slice(start, end).length;
@@ -76,10 +96,21 @@ export default class Users {
 
 
   initSearch() {
+    const self = this;
     $('body').on('click', '#searchBtn', () => this.setSearchParams());
     $('#searchInput').keyup(() => {
       if (Object.is(window.event.keyCode, 13)) {
         this.setSearchParams();
+      }
+    });
+
+    $('#searchInput').on('input', (e1) => {
+      const val = e1.target.value;
+      // eslint-disable-next-line func-names
+      if ($('#searchList option').filter(function () {
+        return this.value && this.value.toUpperCase() === val.toUpperCase();
+      }).length) {
+        self.setSearchParams();
       }
     });
   }

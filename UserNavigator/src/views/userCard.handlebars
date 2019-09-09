@@ -1,4 +1,10 @@
-<div class="col-lg-4 col-sm-6 col-12 py-2">
+<div  class=  
+    {{#if this.showCards}}
+            "col-lg-4 col-sm-6 col-12 py-2"
+    {{else}}
+            "col py-2"
+    {{/if}}
+   >
             <div class="card h-100 text-white bg-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{this.namE_FIRST}} {{this.namE_MIDDLE}} {{this.namE_LAST}}</h5>
